@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/signup_page.dart';
+import 'screens/welcome_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,9 +12,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Fun Signup App',
+      title: 'Cash Money App',
       theme: ThemeData(primarySwatch: Colors.green),
-      home: const SignupPage(),
+      home: WelcomePage(),
     );
   }
 }
