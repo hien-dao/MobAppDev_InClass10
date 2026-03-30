@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'welcome_page.dart';
+import 'success_page.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -20,6 +20,7 @@ class _SignupPageState extends State<SignupPage> {
   // Variable to store user input
   String _name = '';
   String _email = '';
+  DateTime? _dateOfBirth;
   String _password = '';
 
   // Regex pattern for basic validation
@@ -36,6 +37,20 @@ class _SignupPageState extends State<SignupPage> {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime(2000, 1, 1),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null && picked != _dateOfBirth) {
+      setState(() {
+        _dateOfBirth = picked;
+      });
+    }
   }
 
   @override
@@ -96,6 +111,42 @@ class _SignupPageState extends State<SignupPage> {
                     return 'Please enter a valid email';
                   }
                   return null;
+                },
+              ),
+              const SizedBox(height: 16),
+
+              // Date of Birth Field
+              FormField<DateTime>(
+                validator: (value) {
+                  if (_dateOfBirth == null) {
+                    return 'Please select your date of birth';
+                  }
+                  return null;
+                },
+                builder: (FormFieldState<DateTime> state) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextButton.icon(
+                        onPressed: () => _selectDate(context),
+                        icon: const Icon(Icons.calendar_today),
+                        label: Text(
+                          _dateOfBirth == null
+                              ? 'Select Date of Birth'
+                              : 'DOB: ${_dateOfBirth!.month}/${_dateOfBirth!.day}/${_dateOfBirth!.year}',
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                      ),
+                      if (state.hasError)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            state.errorText!,
+                            style: const TextStyle(color: Colors.red, fontSize: 12),
+                          ),
+                        ),
+                    ],
+                  );
                 },
               ),
               const SizedBox(height: 16),
@@ -177,10 +228,10 @@ class _SignupPageState extends State<SignupPage> {
                     );
 
                     // Navigate to Welcome Page
-                    Navigator.push(
+                    Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => WelcomePage(name: _name),
+                        builder: (context) => SuccessPage(name: _name),
                       ),
                     );
                   }
